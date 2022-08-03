@@ -20,7 +20,9 @@ const run = async () => {
     });
 
     io.on("connect", (socket) => {
-      console.log(socket.id);
+      socket.on("newMessage", (data) => {
+        io.emit("newMessage", data);
+      });
     });
 
     serverhttp.listen(3000, () => {
