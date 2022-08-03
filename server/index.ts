@@ -1,26 +1,29 @@
 import express from "express";
-import next from "next";
-
-const app = next({ dev: true });
-const handle = app.getRequestHandler();
+import { app } from "./next";
+import router from "./router";
+import { createServer } from "http";
+import { Server } from "socket.io";
 
 const run = async () => {
   try {
     await app.prepare();
 
     const server = express();
+    server.use(express.json());
+    server.use(router);
 
-    server.get("/api/posts", (req, res) => {
-      res.status(200).json({
-        message: "next custom server",
-      });
+    const serverhttp = createServer(server);
+    const io = new Server(serverhttp, {
+      cors: {
+        origin: ["http://localhost:3000"],
+      },
     });
 
-    server.all("*", (req, res) => {
-      return handle(req, res);
+    io.on("connect", (socket) => {
+      console.log(socket.id);
     });
 
-    server.listen(3000, () => {
+    serverhttp.listen(3000, () => {
       console.log("Server is working...");
     });
   } catch (e) {
