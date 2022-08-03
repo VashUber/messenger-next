@@ -1,20 +1,25 @@
 import type { NextPage } from "next";
-import { Button, TextInput, Stack } from "@mantine/core";
+import {
+  Button,
+  Stack,
+  Paper,
+  Text,
+  Textarea,
+  Container,
+  Box,
+} from "@mantine/core";
 import { io, Socket } from "socket.io-client";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-
-type message = {
-  text: string;
-};
+import { messageT } from "../types";
 
 const Home: NextPage = () => {
   const socket = useRef<Socket>(null!);
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<message[]>([]);
+  const [messages, setMessages] = useState<messageT[]>([]);
 
   useEffect(() => {
     socket.current = io("ws://localhost:3000");
-    socket.current.on("newMessage", (data: message) => {
+    socket.current.on("newMessage", (data: messageT) => {
       setMessages((prev) => [...prev, data]);
     });
   }, []);
@@ -26,29 +31,61 @@ const Home: NextPage = () => {
     setMessage("");
   };
 
-  const onInput = (e: ChangeEvent<HTMLInputElement>) => {
+  const onInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value);
   };
 
   return (
-    <div>
+    <Container>
       <Stack
-        dir="row"
         justify="flex-end"
         sx={{
           minHeight: "100vh",
         }}
       >
-        {JSON.stringify(messages)}
-
-        <TextInput
-          placeholder="Message..."
-          value={message}
-          onChange={onInput}
-        />
-        <Button onClick={sendMessage}>send</Button>
+        <Stack px={15}>
+          {messages.map((message) => {
+            return (
+              <Paper
+                key={message.id}
+                shadow="xs"
+                radius="lg"
+                px="lg"
+                py="xs"
+                withBorder
+                sx={{
+                  maxWidth: "250px",
+                  width: "min-content",
+                }}
+              >
+                <Text>{message.text}</Text>
+              </Paper>
+            );
+          })}
+        </Stack>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "row",
+            gap: "20px",
+          }}
+        >
+          <Textarea
+            placeholder="Message..."
+            value={message}
+            onChange={onInput}
+            sx={{
+              flexGrow: 1,
+            }}
+            autosize
+            minRows={2}
+            maxRows={4}
+          />
+          <Button onClick={sendMessage}>send</Button>
+        </Box>
       </Stack>
-    </div>
+    </Container>
   );
 };
 

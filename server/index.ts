@@ -1,8 +1,10 @@
 import express from "express";
-import { app } from "./next";
-import router from "./router";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import uniqid from "uniqid";
+import router from "./router";
+import { app } from "./next";
+import type { messageT } from "./../types/index";
 
 const run = async () => {
   try {
@@ -20,8 +22,8 @@ const run = async () => {
     });
 
     io.on("connect", (socket) => {
-      socket.on("newMessage", (data) => {
-        io.emit("newMessage", data);
+      socket.on("newMessage", (data: Omit<messageT, "id">) => {
+        io.emit("newMessage", { text: data.text, id: uniqid() });
       });
     });
 
