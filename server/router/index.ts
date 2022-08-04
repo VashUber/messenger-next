@@ -5,13 +5,27 @@ import { User } from "@prisma/client";
 import { handle } from "../next";
 import prisma from "../../lib/prisma";
 import auth from "../middleware/auth";
+import { tokenPayloadT } from "../../types";
 
 const router = Router();
 
 router.get("/api/user", auth, async (req, res) => {
   try {
+    const refreshToken = req.cookies.refreshToken as string;
+    const decodeRefreshToken = jwt.verify(
+      refreshToken,
+      process.env.SECRET as string
+    ) as tokenPayloadT;
+
+    const { email, name } = await prisma.user.findUniqueOrThrow({
+      where: {
+        email: decodeRefreshToken.email,
+      },
+    });
+
     res.json({
-      message: "user",
+      email,
+      name,
     });
   } catch (e) {
     console.log(e);
