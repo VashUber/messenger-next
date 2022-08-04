@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { userT } from "../../types";
 
-const fetchUser = createAsyncThunk("setuser", async () => {
+export const setUser = createAsyncThunk("user/setUser", async () => {
   return (await axios.get<userT>("http://localhost:3000/api/user")).data;
 });
 
@@ -11,18 +11,12 @@ const userReducer = createSlice({
   initialState: {
     user: {} as userT,
   },
-  reducers: {
-    setUser: (state) => {
-      state.user;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchUser.fulfilled, (state, action) => {
+    builder.addCase(setUser.fulfilled, (state, action) => {
       state.user = action.payload;
     });
   },
 });
-
-export const { setUser } = userReducer.actions;
 
 export default userReducer.reducer;

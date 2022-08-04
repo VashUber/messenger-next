@@ -11,11 +11,13 @@ import {
 import { io, Socket } from "socket.io-client";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { messageT } from "../types";
+import useUser from "../hooks/useUser";
 
 const Home: NextPage = () => {
   const socket = useRef<Socket>(null!);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<messageT[]>([]);
+  const { user } = useUser();
 
   useEffect(() => {
     socket.current = io("ws://localhost:3000");

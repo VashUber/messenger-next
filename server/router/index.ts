@@ -23,7 +23,7 @@ router.get("/api/user", auth, async (req, res) => {
       },
     });
 
-    res.json({
+    res.status(200).json({
       email,
       name,
     });
