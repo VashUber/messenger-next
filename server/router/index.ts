@@ -19,17 +19,14 @@ router.get("/api/user", auth, async (req, res) => {
 });
 
 router.get("/api/signout", async (req, res) => {
-  res.cookie(
-    "auth",
-    {
-      access: "",
-      refresh: "",
-    },
-    {
-      httpOnly: true,
-      secure: true,
-    }
-  );
+  res.cookie("accessToken", "", {
+    httpOnly: true,
+    secure: true,
+  });
+  res.cookie("refreshToken", "", {
+    httpOnly: true,
+    secure: true,
+  });
 
   res.status(200).json({
     message: "success",
