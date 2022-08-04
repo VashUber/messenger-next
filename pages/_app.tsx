@@ -1,5 +1,7 @@
 import type { AppProps } from "next/app";
+import { Provider } from "react-redux";
 import { MantineProvider } from "@mantine/core";
+import store from "../store";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -10,7 +12,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         colorScheme: "dark",
       }}
     >
-      <Component {...pageProps} />
+      <Provider store={store}>
+        <Component {...pageProps} />
+      </Provider>
     </MantineProvider>
   );
 }

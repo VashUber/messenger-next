@@ -2,6 +2,7 @@ import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import uniqid from "uniqid";
+import cookies from "cookie-parser";
 import router from "./router";
 import { app } from "./next";
 import type { messageT } from "./../types/index";
@@ -12,6 +13,7 @@ const run = async () => {
 
     const server = express();
     server.use(express.json());
+    server.use(cookies());
     server.use(router);
 
     const serverhttp = createServer(server);

@@ -4,8 +4,37 @@ import jwt from "jsonwebtoken";
 import { User } from "@prisma/client";
 import { handle } from "../next";
 import prisma from "../../lib/prisma";
+import auth from "../middleware/auth";
 
 const router = Router();
+
+router.get("/api/user", auth, async (req, res) => {
+  try {
+    res.json({
+      message: "user",
+    });
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+router.get("/api/signout", async (req, res) => {
+  res.cookie(
+    "auth",
+    {
+      access: "",
+      refresh: "",
+    },
+    {
+      httpOnly: true,
+      secure: true,
+    }
+  );
+
+  res.status(200).json({
+    message: "success",
+  });
+});
 
 router.post("/api/signup", async (req, res) => {
   try {
@@ -63,10 +92,16 @@ router.post("/api/signin", async (req, res) => {
       }
     );
 
-    res.cookie("auth", accessToken);
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: true,
+    });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+    });
     res.status(200).json({
       message: "success",
-      token: refreshToken,
     });
   } catch (e) {
     res.status(502);
