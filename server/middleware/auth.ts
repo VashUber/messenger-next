@@ -31,6 +31,9 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
 
     next();
   } catch (e) {
+    res.status(502).json({
+      message: "error",
+    });
     console.log(e);
   }
 };

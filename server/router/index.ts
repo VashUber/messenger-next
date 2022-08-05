@@ -28,6 +28,9 @@ router.get("/api/user", auth, async (req, res) => {
       name,
     });
   } catch (e) {
+    res.status(502).json({
+      message: "error",
+    });
     console.log(e);
   }
 });

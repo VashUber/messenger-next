@@ -11,13 +11,13 @@ import {
 import { io, Socket } from "socket.io-client";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { messageT } from "../types";
-import useUser from "../hooks/useUser";
+import { useGetUserQuery } from "../store/api";
 
 const Home: NextPage = () => {
   const socket = useRef<Socket>(null!);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<messageT[]>([]);
-  const { user } = useUser();
+  const { data: user, error, isLoading } = useGetUserQuery();
 
   useEffect(() => {
     socket.current = io("ws://localhost:3000");
@@ -39,6 +39,8 @@ const Home: NextPage = () => {
 
   return (
     <Container>
+      {isLoading ? "Loading..." : user?.email}
+      {JSON.stringify(error)}
       <Stack
         justify="flex-end"
         sx={{
