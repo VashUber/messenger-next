@@ -1,8 +1,20 @@
-import { AppShell, Navbar, Button } from "@mantine/core";
+import { AppShell, Navbar, Button, Avatar, Stack } from "@mantine/core";
 import Link from "next/link";
+import axios from "axios";
+import { useRouter } from "next/router";
 import type { ReactNode } from "react";
+import { useGetUserQuery } from "../store/api";
 
 const Default = ({ children }: { children: ReactNode }) => {
+  const router = useRouter();
+
+  const { data: user, isLoading, error } = useGetUserQuery();
+
+  const handleSignout = async () => {
+    await axios.get("http://localhost:3000/api/signout");
+    await router.push("/signin");
+  };
+
   return (
     <AppShell
       navbar={
@@ -21,14 +33,24 @@ const Default = ({ children }: { children: ReactNode }) => {
             </Link>
           </Navbar.Section>
           <Navbar.Section>
-            <Button
-              variant="filled"
+            <Stack
               sx={{
-                width: "100%",
+                flexDirection: "row",
               }}
             >
-              Signout
-            </Button>
+              <Avatar color="blue" radius="xl">
+                {user && user.name.slice(0, 1)}
+              </Avatar>
+              <Button
+                variant="filled"
+                sx={{
+                  width: "100%",
+                }}
+                onClick={handleSignout}
+              >
+                Signout
+              </Button>
+            </Stack>
           </Navbar.Section>
         </Navbar>
       }
