@@ -1,4 +1,3 @@
-import type { NextPage } from "next";
 import {
   Button,
   Stack,
@@ -9,11 +8,13 @@ import {
   Box,
 } from "@mantine/core";
 import { io, Socket } from "socket.io-client";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, ReactElement, useEffect, useRef, useState } from "react";
 import { messageT } from "../types";
 import { useGetUserQuery } from "../store/api";
+import Default from "../layout/default";
+import type { NextPageWithLayout } from "../types";
 
-const Home: NextPage = () => {
+const Home: NextPageWithLayout = () => {
   const socket = useRef<Socket>(null!);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<messageT[]>([]);
@@ -38,16 +39,23 @@ const Home: NextPage = () => {
   };
 
   return (
-    <Container>
-      {isLoading ? "Loading..." : user?.email}
-      {JSON.stringify(error)}
+    <Container
+      sx={{
+        height: "100%",
+      }}
+    >
       <Stack
         justify="flex-end"
         sx={{
-          minHeight: "100vh",
+          height: "100%",
         }}
       >
-        <Stack px={15}>
+        <Stack
+          px={15}
+          sx={{
+            height: "100%",
+          }}
+        >
           {messages.map((message) => {
             return (
               <Paper
@@ -91,6 +99,10 @@ const Home: NextPage = () => {
       </Stack>
     </Container>
   );
+};
+
+Home.getLayout = (page: ReactElement) => {
+  return <Default>{page}</Default>;
 };
 
 export default Home;

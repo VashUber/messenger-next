@@ -1,9 +1,11 @@
-import type { AppProps } from "next/app";
 import { Provider } from "react-redux";
 import { MantineProvider } from "@mantine/core";
 import store from "../store";
+import { AppPropsWithLayout } from "../types";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  const getLayout = Component.getLayout ?? ((page) => page);
+
   return (
     <MantineProvider
       withGlobalStyles
@@ -13,7 +15,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       }}
     >
       <Provider store={store}>
-        <Component {...pageProps} />
+        {getLayout(<Component {...pageProps} />)}
       </Provider>
     </MantineProvider>
   );
