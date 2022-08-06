@@ -10,7 +10,7 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
     const newAccessToken = jwtHandler(accessToken, refreshToken);
 
     if (newAccessToken !== accessToken) {
-      res.cookie("accessToken", accessToken, {
+      res.cookie("accessToken", newAccessToken, {
         httpOnly: true,
         secure: true,
       });
