@@ -1,13 +1,8 @@
 import jwt from "jsonwebtoken";
 import { tokenPayloadT } from "../types";
 
-const jwtHandler = (accessToken: string, refreshToken: string) => {
+const jwtHandler = (accessToken: string, decodeRefreshToken: tokenPayloadT) => {
   try {
-    const decodeRefreshToken = jwt.verify(
-      refreshToken,
-      process.env.SECRET as string
-    ) as tokenPayloadT;
-
     let newAccessToken = accessToken;
 
     jwt.verify(accessToken, process.env.SECRET as string, (error, decode) => {

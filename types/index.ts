@@ -14,6 +14,8 @@ export type userT = {
 
 export type tokenPayloadT = {
   email: string;
+  iat: number;
+  exp: number;
 };
 
 export type NextPageWithLayout = NextPage & {
