@@ -13,6 +13,7 @@ import { messageT } from "../types";
 import { useGetUserQuery } from "../store/api";
 import Default from "../layout/default";
 import type { NextPageWithLayout } from "../types";
+import Message from "../components/Message";
 
 const Home: NextPageWithLayout = () => {
   const socket = useRef<Socket>(null!);
@@ -56,24 +57,9 @@ const Home: NextPageWithLayout = () => {
             height: "100%",
           }}
         >
-          {messages.map((message) => {
-            return (
-              <Paper
-                key={message.id}
-                shadow="xs"
-                radius="lg"
-                px="lg"
-                py="xs"
-                withBorder
-                sx={{
-                  maxWidth: "250px",
-                  width: "min-content",
-                }}
-              >
-                <Text>{message.text}</Text>
-              </Paper>
-            );
-          })}
+          {messages.map((message) => (
+            <Message text={message.text} key={message.id} />
+          ))}
         </Stack>
         <Box
           sx={{

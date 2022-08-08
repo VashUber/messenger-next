@@ -2,18 +2,22 @@ import { AppShell, Navbar, Button, Avatar, Stack } from "@mantine/core";
 import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/router";
-import type { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { useGetUserQuery } from "../store/api";
 
 const Default = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
-  const { data: user, isLoading, error } = useGetUserQuery();
+  const { data: user, isLoading, refetch } = useGetUserQuery();
 
   const handleSignout = async () => {
     await axios.get("http://localhost:3000/api/signout");
     await router.push("/signin");
   };
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   return (
     <AppShell
