@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { ReactNode, useEffect, useState } from "react";
+import { ChangeEvent, ReactNode, useEffect, useMemo, useState } from "react";
 import { useGetUserQuery } from "../store/api";
 
 const Default = ({ children }: { children: ReactNode }) => {
@@ -19,14 +19,23 @@ const Default = ({ children }: { children: ReactNode }) => {
 
   const { data: user, isLoading, refetch } = useGetUserQuery();
   const [isVisible, setIsVisible] = useState(false);
+  const [email, setEmail] = useState("");
 
   const handleSignout = async () => {
     await axios.get("http://localhost:3000/api/signout");
     await router.push("/signin");
   };
 
+  const avatarIcon = useMemo(() => {
+    return user?.name.slice(0, 1) ?? "";
+  }, [user]);
+
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
   const toggleModal = () => {
     setIsVisible((prev) => !prev);
+    setEmail("");
   };
 
   useEffect(() => {
@@ -56,7 +65,7 @@ const Default = ({ children }: { children: ReactNode }) => {
               }}
             >
               <Avatar color="blue" radius="xl">
-                {user && user.name.slice(0, 1)}
+                {avatarIcon}
               </Avatar>
               <Button
                 variant="filled"
@@ -82,7 +91,7 @@ const Default = ({ children }: { children: ReactNode }) => {
       >
         <Stack>
           <Text size="md">Create chat with...</Text>
-          <Input placeholder="Email" />
+          <Input placeholder="Email" value={email} onChange={onChange} />
           <Button variant="filled">Create</Button>
         </Stack>
       </Modal>
