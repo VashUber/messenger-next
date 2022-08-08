@@ -1,18 +1,32 @@
-import { AppShell, Navbar, Button, Avatar, Stack } from "@mantine/core";
+import {
+  AppShell,
+  Navbar,
+  Button,
+  Avatar,
+  Stack,
+  Modal,
+  Text,
+  Input,
+} from "@mantine/core";
 import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useGetUserQuery } from "../store/api";
 
 const Default = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   const { data: user, isLoading, refetch } = useGetUserQuery();
+  const [isVisible, setIsVisible] = useState(false);
 
   const handleSignout = async () => {
     await axios.get("http://localhost:3000/api/signout");
     await router.push("/signin");
+  };
+
+  const toggleModal = () => {
+    setIsVisible((prev) => !prev);
   };
 
   useEffect(() => {
@@ -24,17 +38,16 @@ const Default = ({ children }: { children: ReactNode }) => {
       navbar={
         <Navbar p="xs" width={{ base: 300 }}>
           <Navbar.Section grow mt="md">
-            <Link href="/signin" passHref>
-              <Button
-                variant="light"
-                color="gray"
-                sx={{
-                  width: "100%",
-                }}
-              >
-                Some chat
-              </Button>
-            </Link>
+            <Button
+              variant="light"
+              color="gray"
+              sx={{
+                width: "100%",
+              }}
+              onClick={toggleModal}
+            >
+              Create chat
+            </Button>
           </Navbar.Section>
           <Navbar.Section>
             <Stack
@@ -60,6 +73,19 @@ const Default = ({ children }: { children: ReactNode }) => {
       }
     >
       {children}
+      <Modal
+        opened={isVisible}
+        onClose={toggleModal}
+        centered
+        withCloseButton={false}
+        size="xs"
+      >
+        <Stack>
+          <Text size="md">Create chat with...</Text>
+          <Input placeholder="Email" />
+          <Button variant="filled">Create</Button>
+        </Stack>
+      </Modal>
     </AppShell>
   );
 };
