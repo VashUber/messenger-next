@@ -10,6 +10,7 @@ import {
 } from "@mantine/core";
 import axios from "axios";
 import { NextPage } from "next";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ChangeEvent, SyntheticEvent, useState } from "react";
@@ -37,49 +38,54 @@ const Signin: NextPage = () => {
   };
 
   return (
-    <Center
-      sx={{
-        height: "100vh",
-      }}
-    >
-      <Stack align="center">
-        <Text size="lg">Signin</Text>
-        <form onSubmit={handleSubmit}>
-          <Paper
-            component={Stack}
-            spacing={10}
-            withBorder
-            p={10}
-            radius="md"
-            sx={{
-              display: "flex",
-            }}
-          >
-            <Input
-              placeholder="Email"
-              value={email}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setEmail(e.target.value)
-              }
-            />
-            <PasswordInput
-              placeholder="Password"
-              value={password}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                setPassword(e.target.value);
+    <>
+      <Head>
+        <title>MessengerNext - signin</title>
+      </Head>
+      <Center
+        sx={{
+          height: "100vh",
+        }}
+      >
+        <Stack align="center">
+          <Text size="lg">Signin</Text>
+          <form onSubmit={handleSubmit}>
+            <Paper
+              component={Stack}
+              spacing={10}
+              withBorder
+              p={10}
+              radius="md"
+              sx={{
+                display: "flex",
               }}
-            />
-            <Button type="submit">Signin</Button>
-          </Paper>
-        </form>
-        <Text>
-          Not registered yet?{" "}
-          <Link href="/signup" passHref>
-            <Anchor component="a">Signup</Anchor>
-          </Link>
-        </Text>
-      </Stack>
-    </Center>
+            >
+              <Input
+                placeholder="Email"
+                value={email}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setEmail(e.target.value)
+                }
+              />
+              <PasswordInput
+                placeholder="Password"
+                value={password}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setPassword(e.target.value);
+                }}
+              />
+              <Button type="submit">Signin</Button>
+            </Paper>
+          </form>
+          <Text>
+            Not registered yet?{" "}
+            <Link href="/signup" passHref>
+              <Anchor component="a">Signup</Anchor>
+            </Link>
+          </Text>
+        </Stack>
+      </Center>
+    </>
   );
 };
 

@@ -14,6 +14,7 @@ import { useGetUserQuery } from "../store/api";
 import Default from "../layout/default";
 import type { NextPageWithLayout } from "../types";
 import Message from "../components/Message";
+import Head from "next/head";
 
 const Home: NextPageWithLayout = () => {
   const socket = useRef<Socket>(null!);
@@ -40,50 +41,55 @@ const Home: NextPageWithLayout = () => {
   };
 
   return (
-    <Container
-      sx={{
-        height: "100%",
-      }}
-    >
-      <Stack
-        justify="flex-end"
+    <>
+      <Head>
+        <title>MessengerNext</title>
+      </Head>
+      <Container
         sx={{
           height: "100%",
         }}
       >
         <Stack
-          px={15}
+          justify="flex-end"
           sx={{
             height: "100%",
           }}
         >
-          {messages.map((message) => (
-            <Message text={message.text} key={message.id} />
-          ))}
-        </Stack>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            flexDirection: "row",
-            gap: "20px",
-          }}
-        >
-          <Textarea
-            placeholder="Message..."
-            value={message}
-            onChange={onInput}
+          <Stack
+            px={15}
             sx={{
-              flexGrow: 1,
+              height: "100%",
             }}
-            autosize
-            minRows={2}
-            maxRows={4}
-          />
-          <Button onClick={sendMessage}>send</Button>
-        </Box>
-      </Stack>
-    </Container>
+          >
+            {messages.map((message) => (
+              <Message text={message.text} key={message.id} />
+            ))}
+          </Stack>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "row",
+              gap: "20px",
+            }}
+          >
+            <Textarea
+              placeholder="Message..."
+              value={message}
+              onChange={onInput}
+              sx={{
+                flexGrow: 1,
+              }}
+              autosize
+              minRows={2}
+              maxRows={4}
+            />
+            <Button onClick={sendMessage}>send</Button>
+          </Box>
+        </Stack>
+      </Container>
+    </>
   );
 };
 
