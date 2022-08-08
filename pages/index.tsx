@@ -13,12 +13,12 @@ import { messageT } from "../types";
 import { useGetUserQuery } from "../store/api";
 import Default from "../layout/default";
 import type { NextPageWithLayout } from "../types";
-import Message from "../components/Message";
+import Chat from "../components/Chat";
 import Head from "next/head";
 
 const Home: NextPageWithLayout = () => {
   const socket = useRef<Socket>(null!);
-  const [message, setMessage] = useState("");
+
   const [messages, setMessages] = useState<messageT[]>([]);
   const { data: user, error, isLoading } = useGetUserQuery();
 
@@ -29,15 +29,10 @@ const Home: NextPageWithLayout = () => {
     });
   }, []);
 
-  const sendMessage = () => {
+  const sendMessage = (message: string) => {
     socket.current.emit("newMessage", {
       text: message,
     });
-    setMessage("");
-  };
-
-  const onInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setMessage(e.target.value);
   };
 
   return (
@@ -45,50 +40,8 @@ const Home: NextPageWithLayout = () => {
       <Head>
         <title>MessengerNext</title>
       </Head>
-      <Container
-        sx={{
-          height: "100%",
-        }}
-      >
-        <Stack
-          justify="flex-end"
-          sx={{
-            height: "100%",
-          }}
-        >
-          <Stack
-            px={15}
-            sx={{
-              height: "100%",
-            }}
-          >
-            {messages.map((message) => (
-              <Message text={message.text} key={message.id} />
-            ))}
-          </Stack>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              flexDirection: "row",
-              gap: "20px",
-            }}
-          >
-            <Textarea
-              placeholder="Message..."
-              value={message}
-              onChange={onInput}
-              sx={{
-                flexGrow: 1,
-              }}
-              autosize
-              minRows={2}
-              maxRows={4}
-            />
-            <Button onClick={sendMessage}>send</Button>
-          </Box>
-        </Stack>
-      </Container>
+
+      <Chat messages={messages} onSend={sendMessage} />
     </>
   );
 };
