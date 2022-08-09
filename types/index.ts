@@ -18,6 +18,11 @@ export type tokenPayloadT = {
   exp: number;
 };
 
+export type chatMenuT = {
+  id: number;
+  users: { name: string }[];
+};
+
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
 };

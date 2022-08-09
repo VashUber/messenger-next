@@ -26,7 +26,7 @@ const chatController = {
   },
   getChats: async (req: Request, res: Response) => {
     try {
-      const { email }: { email: string } = req.body;
+      const email = req.query.email as string;
 
       const chats = await prisma.chat.findMany({
         where: {
@@ -45,9 +45,7 @@ const chatController = {
         },
       });
 
-      res.status(200).json({
-        chats,
-      });
+      res.status(200).json(chats);
     } catch (e) {
       console.log(e);
       return res.status(503).json({

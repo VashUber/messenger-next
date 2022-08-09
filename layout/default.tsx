@@ -13,11 +13,14 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { ChangeEvent, ReactNode, useEffect, useMemo, useState } from "react";
 import { useGetUserQuery } from "../store/api/user";
+import { useGetChatsQuery } from "../store/api/chat";
 
 const Default = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
-  const { data: user, isLoading, refetch } = useGetUserQuery();
+  const { data: user, refetch: refetchUser } = useGetUserQuery();
+  const { data: chats } = useGetChatsQuery(user?.email || "");
+
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState("");
 
@@ -45,8 +48,8 @@ const Default = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    refetch();
-  }, [refetch]);
+    refetchUser();
+  }, [refetchUser]);
 
   return (
     <AppShell
@@ -63,6 +66,8 @@ const Default = ({ children }: { children: ReactNode }) => {
             >
               Create chat
             </Button>
+
+            {JSON.stringify(chats)}
           </Navbar.Section>
           <Navbar.Section>
             <Stack
