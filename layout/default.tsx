@@ -14,7 +14,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { ChangeEvent, ReactNode, useEffect, useMemo, useState } from "react";
 import { useGetUserQuery, userApi } from "../store/api/user";
-import { useGetChatsQuery } from "../store/api/chat";
+import { useCreateChatMutation, useGetChatsQuery } from "../store/api/chat";
 import { useDispatch } from "react-redux";
 
 const Default = ({ children }: { children: ReactNode }) => {
@@ -22,6 +22,8 @@ const Default = ({ children }: { children: ReactNode }) => {
   const dispatch = useDispatch();
 
   const { data: user, refetch: refetchUser } = useGetUserQuery();
+  const [createChatMutation, result] = useCreateChatMutation();
+
   const {
     data: chats,
     isLoading,
@@ -57,11 +59,7 @@ const Default = ({ children }: { children: ReactNode }) => {
     setEmail("");
   };
   const createChat = async () => {
-    await axios.post("http://localhost:3000/api/chat", {
-      email1: user?.email,
-      email2: email,
-    });
-    refetchChats();
+    createChatMutation({ email1: user!.email, email2: email });
     toggleModal();
   };
 

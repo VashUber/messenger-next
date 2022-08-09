@@ -23,6 +23,10 @@ export type chatMenuT = {
   users: { name: string }[];
 };
 
+export type serveMessageT = {
+  message: string;
+};
+
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
