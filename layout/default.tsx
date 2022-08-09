@@ -72,7 +72,6 @@ const Default = ({ children }: { children: ReactNode }) => {
           <Navbar.Section grow mt="md">
             <Button
               variant="light"
-              color="gray"
               sx={{
                 width: "100%",
               }}
@@ -102,8 +101,14 @@ const Default = ({ children }: { children: ReactNode }) => {
                     <Button
                       sx={{
                         width: "100%",
+                        fontWeight: "normal",
                       }}
-                      variant="light"
+                      color="gray"
+                      variant={
+                        +(router.query?.chat as string) === elem.id
+                          ? "filled"
+                          : "light"
+                      }
                     >
                       {elem.title}
                     </Button>
