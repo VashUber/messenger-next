@@ -24,7 +24,37 @@ const chatController = {
       });
     }
   },
-  getChats: async (req: Request, res: Response) => {},
+  getChats: async (req: Request, res: Response) => {
+    try {
+      const { email }: { email: string } = req.body;
+
+      const chats = await prisma.chat.findMany({
+        where: {
+          users: {
+            some: {
+              email: email,
+            },
+          },
+        },
+        include: {
+          users: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+
+      res.status(200).json({
+        chats,
+      });
+    } catch (e) {
+      console.log(e);
+      return res.status(503).json({
+        message: "erorr",
+      });
+    }
+  },
 };
 
 export default chatController;
