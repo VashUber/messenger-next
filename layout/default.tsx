@@ -37,6 +37,12 @@ const Default = ({ children }: { children: ReactNode }) => {
     setIsVisible((prev) => !prev);
     setEmail("");
   };
+  const createChat = async () => {
+    await axios.post("http://localhost:3000/api/chat", {
+      email1: user?.email,
+      email2: email,
+    });
+  };
 
   useEffect(() => {
     refetch();
@@ -92,7 +98,9 @@ const Default = ({ children }: { children: ReactNode }) => {
         <Stack>
           <Text size="md">Create chat with...</Text>
           <Input placeholder="Email" value={email} onChange={onChange} />
-          <Button variant="filled">Create</Button>
+          <Button variant="filled" onClick={createChat}>
+            Create
+          </Button>
         </Stack>
       </Modal>
     </AppShell>

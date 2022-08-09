@@ -13,7 +13,7 @@ model User {
   name     String
   password String
   chats    Chat[]
-  Message  Message[]
+  message  Message[]
 }
 
 model Chat {
