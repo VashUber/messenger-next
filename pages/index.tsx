@@ -1,14 +1,16 @@
-import { io, Socket } from "socket.io-client";
 import { ReactElement, useEffect, useRef, useState } from "react";
-import { messageT } from "../types";
-import Default from "../layout/default";
-import type { NextPageWithLayout } from "../types";
-import Chat from "../components/Chat";
+import { io, Socket } from "socket.io-client";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { Stack, Text } from "@mantine/core";
+import type { NextPageWithLayout } from "../types";
+import type { messageT } from "../types";
+import Default from "../layout/default";
+import Chat from "../components/Chat";
 
 const Home: NextPageWithLayout = () => {
   const socket = useRef<Socket>(null!);
-
+  const router = useRouter();
   const [messages, setMessages] = useState<messageT[]>([]);
 
   useEffect(() => {
@@ -30,7 +32,19 @@ const Home: NextPageWithLayout = () => {
         <title>MessengerNext</title>
       </Head>
 
-      <Chat messages={messages} onSend={sendMessage} />
+      {router.query.chat ? (
+        <Chat messages={messages} onSend={sendMessage} />
+      ) : (
+        <Stack
+          sx={{
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text size="md">Select or create chat</Text>
+        </Stack>
+      )}
     </>
   );
 };

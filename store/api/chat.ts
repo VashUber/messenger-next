@@ -5,7 +5,7 @@ export const chatApi = createApi({
   reducerPath: "chatApi",
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/" }),
   endpoints: (builder) => ({
-    getChats: builder.query<chatMenuT, string>({
+    getChats: builder.query<chatMenuT[], string>({
       query: (email) => ({
         url: `api/chats`,
         params: {

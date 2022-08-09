@@ -7,6 +7,7 @@ import {
   Modal,
   Text,
   Input,
+  Loader,
 } from "@mantine/core";
 import Link from "next/link";
 import axios from "axios";
@@ -21,7 +22,7 @@ const Default = ({ children }: { children: ReactNode }) => {
   const dispatch = useDispatch();
 
   const { data: user, refetch: refetchUser } = useGetUserQuery();
-  const { data: chats } = useGetChatsQuery(user?.email || "");
+  const { data: chats, isLoading } = useGetChatsQuery(user?.email || "");
 
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState("");
@@ -34,6 +35,15 @@ const Default = ({ children }: { children: ReactNode }) => {
   const avatarIcon = useMemo(() => {
     return user?.name.slice(0, 1) ?? "";
   }, [user]);
+
+  const chatMenu = useMemo(() => {
+    return chats?.map((elem) => {
+      return {
+        id: elem.id,
+        title: elem.users.filter((u) => u.name !== user?.name)[0].name,
+      };
+    });
+  }, [chats, user]);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -71,7 +81,36 @@ const Default = ({ children }: { children: ReactNode }) => {
               Create chat
             </Button>
 
-            {JSON.stringify(chats)}
+            <Stack
+              py={20}
+              spacing={10}
+              sx={{
+                alignItems: "center",
+              }}
+            >
+              {isLoading && <Loader variant="dots" />}
+
+              {chatMenu?.map((elem) => {
+                return (
+                  <Link
+                    key={elem.id}
+                    href={{
+                      pathname: "/",
+                      query: { chat: elem.id },
+                    }}
+                  >
+                    <Button
+                      sx={{
+                        width: "100%",
+                      }}
+                      variant="light"
+                    >
+                      {elem.title}
+                    </Button>
+                  </Link>
+                );
+              })}
+            </Stack>
           </Navbar.Section>
           <Navbar.Section>
             <Stack
