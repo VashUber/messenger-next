@@ -22,7 +22,11 @@ const Default = ({ children }: { children: ReactNode }) => {
   const dispatch = useDispatch();
 
   const { data: user, refetch: refetchUser } = useGetUserQuery();
-  const { data: chats, isLoading } = useGetChatsQuery(user?.email || "");
+  const {
+    data: chats,
+    isLoading,
+    refetch: refetchChats,
+  } = useGetChatsQuery(user?.email || "");
 
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState("");
@@ -57,6 +61,8 @@ const Default = ({ children }: { children: ReactNode }) => {
       email1: user?.email,
       email2: email,
     });
+    refetchChats();
+    toggleModal();
   };
 
   useEffect(() => {
