@@ -12,7 +12,7 @@ import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { ChangeEvent, ReactNode, useEffect, useMemo, useState } from "react";
-import { useGetUserQuery } from "../store/api";
+import { useGetUserQuery } from "../store/api/user";
 
 const Default = ({ children }: { children: ReactNode }) => {
   const router = useRouter();

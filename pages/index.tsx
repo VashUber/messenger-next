@@ -1,16 +1,6 @@
-import {
-  Button,
-  Stack,
-  Paper,
-  Text,
-  Textarea,
-  Container,
-  Box,
-} from "@mantine/core";
 import { io, Socket } from "socket.io-client";
-import { ChangeEvent, ReactElement, useEffect, useRef, useState } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 import { messageT } from "../types";
-import { useGetUserQuery } from "../store/api";
 import Default from "../layout/default";
 import type { NextPageWithLayout } from "../types";
 import Chat from "../components/Chat";
@@ -20,7 +10,6 @@ const Home: NextPageWithLayout = () => {
   const socket = useRef<Socket>(null!);
 
   const [messages, setMessages] = useState<messageT[]>([]);
-  const { data: user, error, isLoading } = useGetUserQuery();
 
   useEffect(() => {
     socket.current = io("ws://localhost:3000");
