@@ -12,11 +12,13 @@ import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { ChangeEvent, ReactNode, useEffect, useMemo, useState } from "react";
-import { useGetUserQuery } from "../store/api/user";
+import { useGetUserQuery, userApi } from "../store/api/user";
 import { useGetChatsQuery } from "../store/api/chat";
+import { useDispatch } from "react-redux";
 
 const Default = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const { data: user, refetch: refetchUser } = useGetUserQuery();
   const { data: chats } = useGetChatsQuery(user?.email || "");
@@ -48,8 +50,10 @@ const Default = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    refetchUser();
-  }, [refetchUser]);
+    return () => {
+      dispatch(userApi.util.resetApiState());
+    };
+  }, [dispatch]);
 
   return (
     <AppShell
