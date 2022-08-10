@@ -10,27 +10,30 @@ import {
   Loader,
 } from "@mantine/core";
 import Link from "next/link";
-import axios from "axios";
 import { useRouter } from "next/router";
-import { ChangeEvent, ReactNode, useEffect, useMemo, useState } from "react";
-import { useGetUserQuery, userApi } from "../store/api/user";
-import { useCreateChatMutation, useGetChatsQuery } from "../store/api/chat";
-import { useDispatch } from "react-redux";
+import { ChangeEvent, ReactNode, useMemo, useState } from "react";
+import {
+  useGetUserQuery,
+  useSignoutMutation,
+  useCreateChatMutation,
+  useGetChatsQuery,
+} from "../store/api";
 
 const Default = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
-  const dispatch = useDispatch();
 
   const { data: user, refetch: refetchUser } = useGetUserQuery();
-  const [createChatMutation, result] = useCreateChatMutation();
+  const [createChatMutation, resultCreateChat] = useCreateChatMutation();
+  const [createSignoutMutation, resultCreateSignout] = useSignoutMutation();
   const { data: chats, isLoading, refetch: refetchChats } = useGetChatsQuery();
 
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState("");
 
   const handleSignout = async () => {
-    await axios.get("http://localhost:3000/api/signout");
-    await router.push("/signin");
+    createSignoutMutation(async () => {
+      await router.push("/signin");
+    });
   };
 
   const avatarIcon = useMemo(() => {
@@ -57,12 +60,6 @@ const Default = ({ children }: { children: ReactNode }) => {
     createChatMutation({ email1: user!.email, email2: email });
     toggleModal();
   };
-
-  useEffect(() => {
-    return () => {
-      dispatch(userApi.util.resetApiState());
-    };
-  }, [dispatch]);
 
   return (
     <AppShell

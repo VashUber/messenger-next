@@ -24,7 +24,7 @@ export type chatMenuT = {
   users: Omit<userT, "email">[];
 };
 
-export type serveMessageT = {
+export type serverMessageT = {
   message: string;
 };
 

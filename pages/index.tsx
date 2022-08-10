@@ -7,8 +7,7 @@ import type { NextPageWithLayout } from "../types";
 import type { messageT } from "../types";
 import Default from "../layout/default";
 import Chat from "../components/Chat";
-import { useGetUserQuery } from "../store/api/user";
-import { useGetChatByIdQuery } from "../store/api/chat";
+import { useGetChatByIdQuery, useGetUserQuery } from "../store/api";
 
 const Home: NextPageWithLayout = () => {
   const socket = useRef<Socket>(null!);
@@ -20,7 +19,7 @@ const Home: NextPageWithLayout = () => {
     data: chat,
     isLoading,
     refetch: refetchChat,
-  } = useGetChatByIdQuery(+(router.query.chat as string) || -1, {
+  } = useGetChatByIdQuery(+(router.query.chat as string), {
     skip: router.query.chat === undefined,
   });
 
