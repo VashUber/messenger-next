@@ -7,18 +7,26 @@ import type { NextPageWithLayout } from "../types";
 import type { messageT } from "../types";
 import Default from "../layout/default";
 import Chat from "../components/Chat";
+import { useGetUserQuery } from "../store/api/user";
 
 const Home: NextPageWithLayout = () => {
   const socket = useRef<Socket>(null!);
   const router = useRouter();
   const [messages, setMessages] = useState<messageT[]>([]);
+  const { data: user } = useGetUserQuery();
 
   useEffect(() => {
-    socket.current = io("ws://localhost:3000");
-    socket.current.on("newMessage", (data: messageT) => {
-      setMessages((prev) => [...prev, data]);
-    });
-  }, []);
+    if (user) {
+      socket.current = io("ws://localhost:3000", {
+        auth: {
+          email: user.email,
+        },
+      });
+      socket.current.on("newMessage", (data: messageT) => {
+        setMessages((prev) => [...prev, data]);
+      });
+    }
+  }, [user]);
 
   const sendMessage = (message: string) => {
     socket.current.emit("newMessage", {
