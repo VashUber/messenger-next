@@ -8,12 +8,21 @@ import type { messageT } from "../types";
 import Default from "../layout/default";
 import Chat from "../components/Chat";
 import { useGetUserQuery } from "../store/api/user";
+import { useGetChatByIdQuery } from "../store/api/chat";
 
 const Home: NextPageWithLayout = () => {
   const socket = useRef<Socket>(null!);
   const router = useRouter();
+
   const [messages, setMessages] = useState<messageT[]>([]);
   const { data: user } = useGetUserQuery();
+  const {
+    data: chat,
+    isLoading,
+    refetch: refetchChat,
+  } = useGetChatByIdQuery(+(router.query.chat as string) || -1, {
+    skip: router.query.chat === undefined,
+  });
 
   useEffect(() => {
     if (user) {
@@ -41,7 +50,7 @@ const Home: NextPageWithLayout = () => {
       </Head>
 
       {router.query.chat ? (
-        <Chat messages={messages} onSend={sendMessage} />
+        <Chat messages={chat?.messages || []} onSend={sendMessage} />
       ) : (
         <Stack
           sx={{

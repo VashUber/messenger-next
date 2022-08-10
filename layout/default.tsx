@@ -23,7 +23,6 @@ const Default = ({ children }: { children: ReactNode }) => {
 
   const { data: user, refetch: refetchUser } = useGetUserQuery();
   const [createChatMutation, result] = useCreateChatMutation();
-
   const { data: chats, isLoading, refetch: refetchChats } = useGetChatsQuery();
 
   const [isVisible, setIsVisible] = useState(false);

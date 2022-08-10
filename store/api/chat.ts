@@ -1,19 +1,27 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { chatMenuT, serveMessageT } from "../../types";
+import { chatMenuT, chatT, serveMessageT } from "../../types";
 
 export const chatApi = createApi({
   reducerPath: "chatApi",
-  tagTypes: ["chats"],
+  tagTypes: ["chats", "chat"],
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/" }),
   endpoints: (builder) => ({
-    getChats: builder.query<chatMenuT[], string>({
-      query: (email) => ({
+    getChats: builder.query<chatMenuT[], void>({
+      query: () => ({
         url: `api/chats`,
-        params: {
-          email,
-        },
       }),
       providesTags: ["chats"],
+    }),
+    getChatById: builder.query<chatT, number>({
+      query: (id) => ({
+        url: `api/chat`,
+        params: {
+          id,
+        },
+      }),
+      providesTags: (result, error, arg) => {
+        return [{ type: "chat", id: arg }];
+      },
     }),
     createChat: builder.mutation<
       serveMessageT,
@@ -29,4 +37,5 @@ export const chatApi = createApi({
   }),
 });
 
-export const { useGetChatsQuery, useCreateChatMutation } = chatApi;
+export const { useGetChatsQuery, useCreateChatMutation, useGetChatByIdQuery } =
+  chatApi;

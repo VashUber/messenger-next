@@ -21,7 +21,7 @@ const chatController = {
       });
     } catch (e) {
       console.log(e);
-      return res.status(503).json({
+      return res.status(502).json({
         message: "erorr",
       });
     }
