@@ -18,6 +18,10 @@ const userController = {
         where: {
           email: decodeRefreshToken.email,
         },
+        select: {
+          name: true,
+          email: true,
+        },
       });
 
       res.status(200).json({
