@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../../lib/prisma";
+import jwt from "jsonwebtoken";
+import { tokenPayloadT } from "../../types";
 
 const chatController = {
   createChat: async (req: Request, res: Response) => {
@@ -26,13 +28,17 @@ const chatController = {
   },
   getChats: async (req: Request, res: Response) => {
     try {
-      const email = req.query.email as string;
+      const refreshToken = req.cookies.refreshToken as string;
+      const decodeRefreshToken = jwt.verify(
+        refreshToken,
+        process.env.SECRET as string
+      ) as tokenPayloadT;
 
       const chats = await prisma.chat.findMany({
         where: {
           users: {
             some: {
-              email: email,
+              email: decodeRefreshToken.email,
             },
           },
         },
@@ -48,8 +54,45 @@ const chatController = {
       res.status(200).json(chats);
     } catch (e) {
       console.log(e);
-      return res.status(503).json({
+      return res.status(502).json({
         message: "erorr",
+      });
+    }
+  },
+  getChatById: async (req: Request, res: Response) => {
+    try {
+      const id = +(req.query.id as string);
+      const refreshToken = req.cookies.refreshToken as string;
+      const decodeRefreshToken = jwt.verify(
+        refreshToken,
+        process.env.SECRET as string
+      ) as tokenPayloadT;
+
+      const chat = await prisma.chat.findFirstOrThrow({
+        where: {
+          id,
+          users: {
+            some: {
+              email: decodeRefreshToken.email,
+            },
+          },
+        },
+        include: {
+          messages: true,
+          users: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+        },
+      });
+
+      return res.status(200).json(chat);
+    } catch (e) {
+      console.log(e);
+      return res.status(502).json({
+        message: "error",
       });
     }
   },

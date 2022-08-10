@@ -16,6 +16,7 @@ router.post("/api/signin", userController.signin);
 // chat
 
 router.get("/api/chats", auth, chatController.getChats);
+router.get("/api/chat", auth, chatController.getChatById);
 router.post("/api/chat", auth, chatController.createChat);
 
 router.all("*", (req, res) => {
