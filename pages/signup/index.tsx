@@ -11,9 +11,9 @@ import {
 import { NextPage } from "next";
 import { ChangeEvent, SyntheticEvent, useState } from "react";
 import Link from "next/link";
-import axios from "axios";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import { useSignupMutation } from "../../store/api";
 
 const Signup: NextPage = () => {
   const [email, setEmail] = useState("");
@@ -21,17 +21,21 @@ const Signup: NextPage = () => {
   const [name, setName] = useState("");
 
   const router = useRouter();
+  const [createSignupMutation, resultSignupMutation] = useSignupMutation();
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     if (email && password && name) {
-      await axios.post("http://localhost:3000/api/signup", {
-        email,
-        password,
-        name,
+      createSignupMutation({
+        cb: async () => {
+          await router.push("/signin");
+        },
+        user: {
+          email,
+          name,
+          password,
+        },
       });
-
-      router.push("/signin");
     }
   };
 

@@ -8,32 +8,33 @@ import {
   Anchor,
   PasswordInput,
 } from "@mantine/core";
-import axios from "axios";
 import { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ChangeEvent, SyntheticEvent, useState } from "react";
+import { useSigninMutation } from "../../store/api";
 
 const Signin: NextPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [createSigninMutation, resultSigninMutation] = useSigninMutation();
 
   const router = useRouter();
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     if (email && password) {
-      const { data } = await axios.post<{ token: string }>(
-        "http://localhost:3000/api/signin",
-        {
+      createSigninMutation({
+        cb: async () => {
+          await router.push("/");
+        },
+        user: {
           email,
           password,
-        }
-      );
-
-      localStorage.setItem("token", data.token);
-      router.push("/");
+        },
+      });
     }
   };
 

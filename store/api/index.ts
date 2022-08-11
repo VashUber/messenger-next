@@ -1,3 +1,4 @@
+import { User } from "@prisma/client";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { chatMenuT, chatT, serverMessageT, userT } from "../../types";
 
@@ -38,8 +39,44 @@ export const api = createApi({
       query: () => `api/user`,
       providesTags: ["user"],
     }),
+    signup: builder.mutation<
+      serverMessageT,
+      { cb: () => Promise<void>; user: Omit<User, "id"> }
+    >({
+      query: ({ user: body }) => ({
+        url: "api/signup",
+        method: "POST",
+        body,
+      }),
+      onQueryStarted: async ({ cb }, { queryFulfilled, dispatch }) => {
+        try {
+          await queryFulfilled;
+          await cb();
+        } catch (e) {
+          console.log(e);
+        }
+      },
+    }),
+    signin: builder.mutation<
+      serverMessageT,
+      { cb: () => Promise<void>; user: Omit<User, "id" | "name"> }
+    >({
+      query: ({ user: body }) => ({
+        url: "api/signin",
+        method: "POST",
+        body,
+      }),
+      onQueryStarted: async ({ cb }, { queryFulfilled, dispatch }) => {
+        try {
+          await queryFulfilled;
+          await cb();
+        } catch (e) {
+          console.log(e);
+        }
+      },
+    }),
     signout: builder.mutation<serverMessageT, () => Promise<void>>({
-      query: () => `api/signout`,
+      query: () => "api/signout",
       onQueryStarted: async (cb, { queryFulfilled, dispatch }) => {
         try {
           await queryFulfilled;
@@ -59,4 +96,6 @@ export const {
   useGetChatByIdQuery,
   useGetUserQuery,
   useSignoutMutation,
+  useSigninMutation,
+  useSignupMutation,
 } = api;
