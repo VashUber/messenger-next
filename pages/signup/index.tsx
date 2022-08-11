@@ -83,7 +83,12 @@ const Signup: NextPage = () => {
                   setName(e.target.value);
                 }}
               />
-              <Button type="submit">Signup</Button>
+              <Button type="submit">
+                {resultSignupMutation.isSuccess ||
+                resultSignupMutation.isLoading
+                  ? "Waiting..."
+                  : "Signup"}
+              </Button>
             </Paper>
           </form>
           <Text>

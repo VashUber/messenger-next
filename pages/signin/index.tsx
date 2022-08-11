@@ -75,7 +75,12 @@ const Signin: NextPage = () => {
                   setPassword(e.target.value);
                 }}
               />
-              <Button type="submit">Signin</Button>
+              <Button type="submit">
+                {resultSigninMutation.isSuccess ||
+                resultSigninMutation.isLoading
+                  ? "Waiting..."
+                  : "Signin"}
+              </Button>
             </Paper>
           </form>
           <Text>

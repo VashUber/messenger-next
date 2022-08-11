@@ -129,7 +129,9 @@ const Default = ({ children }: { children: ReactNode }) => {
                 }}
                 onClick={handleSignout}
               >
-                Signout
+                {resultCreateSignout.isSuccess || resultCreateSignout.isLoading
+                  ? "Waiting..."
+                  : "Signout"}
               </Button>
             </Stack>
           </Navbar.Section>
