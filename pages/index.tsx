@@ -28,6 +28,7 @@ const Home: NextPageWithLayout = () => {
       socket.current = io("ws://localhost:3000", {
         auth: {
           email: user.email,
+          name: user.name,
         },
       });
       socket.current.on("newMessage", (data: messageT) => {
@@ -37,9 +38,13 @@ const Home: NextPageWithLayout = () => {
   }, [user]);
 
   const sendMessage = (message: string) => {
-    socket.current.emit("newMessage", {
+    const data = {
       text: message,
-    });
+      sender: user!.email,
+      receiver: chat!.users.find((u) => u.email !== user!.email)?.email,
+    };
+
+    socket.current.emit("newMessage", data);
   };
 
   return (
@@ -49,7 +54,7 @@ const Home: NextPageWithLayout = () => {
       </Head>
 
       {router.query.chat ? (
-        <Chat messages={chat?.messages || []} onSend={sendMessage} />
+        <Chat messages={messages} onSend={sendMessage} />
       ) : (
         <Stack
           sx={{

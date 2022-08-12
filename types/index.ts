@@ -6,6 +6,7 @@ export type messageT = {
   text: string;
   id: string;
   sender: string;
+  receiver: string;
 };
 
 export type userT = {
