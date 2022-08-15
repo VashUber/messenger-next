@@ -1,7 +1,5 @@
 import { Server } from "socket.io";
 import serverhttp from "../express";
-import type { messageT } from "../../types";
-import uniqid from "uniqid";
 import { User } from "@prisma/client";
 import prisma from "../../lib/prisma";
 

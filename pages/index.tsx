@@ -5,7 +5,6 @@ import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { Stack, Text } from "@mantine/core";
 import type { NextPageWithLayout } from "../types";
-import type { messageT } from "../types";
 import Default from "../layout/default";
 import Chat from "../components/Chat";
 import { api, useGetChatByIdQuery, useGetUserQuery } from "../store/api";
