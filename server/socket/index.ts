@@ -3,6 +3,7 @@ import serverhttp from "../express";
 import type { messageT } from "../../types";
 import uniqid from "uniqid";
 import { User } from "@prisma/client";
+import prisma from "../../lib/prisma";
 
 const io = new Server(serverhttp, {
   cors: {
@@ -18,13 +19,38 @@ const socketInit = () => {
     const user = socket.handshake.auth as socketAuthT;
     onlineUsers.set(user.email, socket.id);
 
-    socket.on("newMessage", (data: Omit<messageT, "id">) => {
-      const to = onlineUsers.get(data.receiver);
+    socket.on(
+      "newMessage",
+      async (data: {
+        chatId: number;
+        receiver: string;
+        sender: string;
+        text: string;
+      }) => {
+        const to = onlineUsers.get(data.receiver);
+        await prisma.message.create({
+          data: {
+            Chat: {
+              connect: {
+                id: data.chatId,
+              },
+            },
+            sender: {
+              connect: {
+                email: data.sender,
+              },
+            },
+            text: data.text,
+          },
+        });
 
-      if (!to) return;
+        io.to(socket.id).emit("newMessage", { chatId: data.chatId });
 
-      io.to(to).emit("newMessage", { text: data.text, id: uniqid() });
-    });
+        if (!to) return;
+
+        io.to(to).emit("newMessage", { chatId: data.chatId });
+      }
+    );
 
     socket.on("disconnect", () => {
       onlineUsers.delete(user.email);

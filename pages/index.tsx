@@ -1,19 +1,20 @@
-import { ReactElement, useEffect, useRef, useState } from "react";
+import { ReactElement, useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 import Head from "next/head";
+import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { Stack, Text } from "@mantine/core";
 import type { NextPageWithLayout } from "../types";
 import type { messageT } from "../types";
 import Default from "../layout/default";
 import Chat from "../components/Chat";
-import { useGetChatByIdQuery, useGetUserQuery } from "../store/api";
+import { api, useGetChatByIdQuery, useGetUserQuery } from "../store/api";
 
 const Home: NextPageWithLayout = () => {
   const socket = useRef<Socket>(null!);
   const router = useRouter();
+  const dispath = useDispatch();
 
-  const [messages, setMessages] = useState<messageT[]>([]);
   const { data: user } = useGetUserQuery();
   const {
     data: chat,
@@ -31,17 +32,18 @@ const Home: NextPageWithLayout = () => {
           name: user.name,
         },
       });
-      socket.current.on("newMessage", (data: messageT) => {
-        setMessages((prev) => [...prev, data]);
+      socket.current.on("newMessage", (data: { chatId: number }) => {
+        dispath(api.util.invalidateTags([{ type: "chat", id: data.chatId }]));
       });
     }
-  }, [user]);
+  }, [user, refetchChat, dispath]);
 
   const sendMessage = (message: string) => {
     const data = {
       text: message,
       sender: user!.email,
       receiver: chat!.users.find((u) => u.email !== user!.email)?.email,
+      chatId: chat!.id,
     };
 
     socket.current.emit("newMessage", data);
@@ -54,7 +56,7 @@ const Home: NextPageWithLayout = () => {
       </Head>
 
       {router.query.chat ? (
-        <Chat messages={messages} onSend={sendMessage} />
+        <Chat messages={chat?.messages || []} onSend={sendMessage} />
       ) : (
         <Stack
           sx={{

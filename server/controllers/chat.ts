@@ -78,11 +78,22 @@ const chatController = {
           },
         },
         include: {
-          messages: true,
+          messages: {
+            select: {
+              id: true,
+              text: true,
+              sender: {
+                select: {
+                  email: true,
+                },
+              },
+            },
+          },
           users: {
             select: {
               name: true,
               email: true,
+              id: true,
             },
           },
         },

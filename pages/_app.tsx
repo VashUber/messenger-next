@@ -1,5 +1,5 @@
 import { Provider } from "react-redux";
-import { MantineProvider } from "@mantine/core";
+import { MantineProvider, Global } from "@mantine/core";
 import store from "../store";
 import { AppPropsWithLayout } from "../types";
 
@@ -14,6 +14,13 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         colorScheme: "dark",
       }}
     >
+      <Global
+        styles={() => ({
+          main: {
+            maxHeight: "100vh !important",
+          },
+        })}
+      />
       <Provider store={store}>
         {getLayout(<Component {...pageProps} />)}
       </Provider>

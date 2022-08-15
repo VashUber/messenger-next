@@ -1,7 +1,7 @@
 import { Paper, Text } from "@mantine/core";
 import type { FC } from "react";
 
-const Message: FC<{ text: string }> = ({ text }) => {
+const Message: FC<{ text: string; self: boolean }> = ({ text, self }) => {
   return (
     <Paper
       shadow="xs"
@@ -12,8 +12,10 @@ const Message: FC<{ text: string }> = ({ text }) => {
       sx={{
         maxWidth: "250px",
         width: "min-content",
+        marginLeft: self ? "auto" : "",
       }}
     >
+      {self}
       <Text>{text}</Text>
     </Paper>
   );

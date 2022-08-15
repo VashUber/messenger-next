@@ -24,8 +24,8 @@ model Chat {
 
 model Message {
   id     Int    @id @default(autoincrement())
-  Chat   Chat?  @relation(fields: [chatId], references: [id])
-  chatId Int?
+  Chat   Chat   @relation(fields: [chatId], references: [id])
+  chatId Int
   text   String
   sender User   @relation(fields: [userId], references: [id])
   userId Int
