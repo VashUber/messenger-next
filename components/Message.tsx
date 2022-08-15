@@ -1,7 +1,7 @@
 import { Paper, Text } from "@mantine/core";
-import type { FC } from "react";
+import { FC, memo } from "react";
 
-const Message: FC<{ text: string; self: boolean }> = ({ text, self }) => {
+const Message: FC<{ text: string; self: boolean }> = memo(({ text, self }) => {
   return (
     <Paper
       shadow="xs"
@@ -15,10 +15,11 @@ const Message: FC<{ text: string; self: boolean }> = ({ text, self }) => {
         marginLeft: self ? "auto" : "",
       }}
     >
-      {self}
       <Text>{text}</Text>
     </Paper>
   );
-};
+});
+
+Message.displayName = "Message";
 
 export default Message;

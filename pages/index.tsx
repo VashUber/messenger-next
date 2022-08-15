@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useRef } from "react";
+import { ReactElement, useCallback, useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 import Head from "next/head";
 import { useDispatch } from "react-redux";
@@ -38,16 +38,19 @@ const Home: NextPageWithLayout = () => {
     }
   }, [user, refetchChat, dispath]);
 
-  const sendMessage = (message: string) => {
-    const data = {
-      text: message,
-      sender: user!.email,
-      receiver: chat!.users.find((u) => u.email !== user!.email)?.email,
-      chatId: chat!.id,
-    };
+  const sendMessage = useCallback(
+    (message: string) => {
+      const data = {
+        text: message,
+        sender: user!.email,
+        receiver: chat!.users.find((u) => u.email !== user!.email)?.email,
+        chatId: chat!.id,
+      };
 
-    socket.current.emit("newMessage", data);
-  };
+      socket.current.emit("newMessage", data);
+    },
+    [chat, user]
+  );
 
   return (
     <>

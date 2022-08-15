@@ -1,5 +1,12 @@
 import { Box, Button, Container, Stack, Textarea } from "@mantine/core";
-import { ChangeEvent, FC, useLayoutEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  FC,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import Message from "./Message";
 import { messageT } from "../types";
 import { useGetUserQuery } from "../store/api";
@@ -12,16 +19,16 @@ interface ChatPropsI {
 const Chat: FC<ChatPropsI> = ({ messages, onSend }) => {
   const { data: user } = useGetUserQuery();
   const [message, setMessage] = useState("");
-  const onInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
+  const onInput = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value);
-  };
+  }, []);
 
   const chat = useRef<HTMLDivElement>(null!);
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     onSend(message);
     setMessage("");
-  };
+  }, [message, onSend]);
 
   useLayoutEffect(() => {
     chat.current.scrollTo({
